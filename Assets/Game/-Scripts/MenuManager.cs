@@ -19,7 +19,7 @@ public class MenuManager : MonoBehaviour
         else
             DisableAidio();
 
-        fadeImage.color = new Color(0, 0, 0, 0);
+        fadeImage.color = new Color(0, 0, 0, 1);
 
         StartCoroutine(FadeIn());
     }
