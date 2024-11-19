@@ -8,9 +8,11 @@ public class TutorialManager : MonoBehaviour
     [SerializeField] private GameObject[] _menuWindows;
     [SerializeField] private GameObject[] _tutorialWindows;
     private int _windowIndex = 0;
+    private MenuManager _menuManager;
 
     private void Start()
     {
+        _menuManager = GetComponent<MenuManager>();
         int FirstEnter = PlayerPrefs.GetInt("FirstEnterCheck", 0);
         if (FirstEnter == 0)
         {
@@ -26,6 +28,7 @@ public class TutorialManager : MonoBehaviour
 
     public void OpenNextWindow()
     {
+        _menuManager.PlayClickSound();
         _tutorialWindows[_windowIndex].SetActive(false);
         _windowIndex++;
         if (_windowIndex >= 3)

@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -15,8 +14,17 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject[] _tutorialWindows;
     private int _windowIndex = 0;
 
+    private AudioSource _audioSource;
+    [SerializeField] private AudioClip _clickSound;
+    [SerializeField] private AudioClip _increaseSound;
+
     private void Start()
     {
+        _audioSource = GetComponent<AudioSource>();
+        string audioCheck = PlayerPrefs.GetString("AudioCheck", "unMute");
+        if (audioCheck == "unMute") AudioListener.volume = 1;
+        else AudioListener.volume = 1;
+
         int skinIndex = PlayerPrefs.GetInt("SelectedSkin", 0);
         _plane.sprite = _planeSprites[skinIndex];
 
@@ -25,6 +33,7 @@ public class GameManager : MonoBehaviour
 
     public void LoadSceneWithFade(string sceneName)
     {
+        PlayClickSound();
         StartCoroutine(FadeOut(sceneName));
     }
 
@@ -70,6 +79,7 @@ public class GameManager : MonoBehaviour
         if (activeWindow == 0)
         {
             _tutorialWindows[_windowIndex].SetActive(true);
+            PlayClickSound();
             return;
         }
 
@@ -86,5 +96,18 @@ public class GameManager : MonoBehaviour
             return;
         }
         _tutorialWindows[_windowIndex].SetActive(true);
+        PlayClickSound();
+    }
+
+    public void PlayClickSound()
+    {
+        _audioSource.PlayOneShot(_clickSound);
+        Vibration.VibrateIOS(ImpactFeedbackStyle.Light);
+    }
+
+    public void PlayIncreaseSound()
+    {
+        _audioSource.PlayOneShot(_increaseSound);
+        Vibration.VibrateIOS(ImpactFeedbackStyle.Rigid);
     }
 }

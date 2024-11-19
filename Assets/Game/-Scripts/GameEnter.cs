@@ -11,6 +11,7 @@ public class GameEnter : MonoBehaviour
     private void Start()
     {
         Screen.orientation = ScreenOrientation.Portrait;
+        Vibration.Init();
         StartCoroutine(FillLoadImage());
     }
 
@@ -23,7 +24,7 @@ public class GameEnter : MonoBehaviour
             _redBar.fillAmount = Mathf.Lerp(0, 1, currentTime / 2.3f);
             yield return null;
         }
-
+        Vibration.VibratePop();
         SceneManager.LoadScene(_sceneName);
     }
 }

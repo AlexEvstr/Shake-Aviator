@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections;
 
 public class ShopManager : MonoBehaviour
 {
@@ -19,9 +20,12 @@ public class ShopManager : MonoBehaviour
 
     private int totalCoins;
     private int selectedSkinIndex = 0;
+    private MenuManager _menuManager;
+    [SerializeField] private GameObject _notEnough;
 
     private void Start()
     {
+        _menuManager = GetComponent<MenuManager>();
         totalCoins = PlayerPrefs.GetInt("TotalCoins", 0);
         UpdateCoinsUI();
 
@@ -44,15 +48,18 @@ public class ShopManager : MonoBehaviour
                 SetSkinBought(index);
 
                 SetSelectedSkin(index);
+                _menuManager.PlaySuccessSound();
             }
             else
             {
-                Debug.Log("Not enough coins!");
+                StartCoroutine(ShowNotEnough());
+                _menuManager.PlayErrorSound();
             }
         }
         else
         {
             SetSelectedSkin(index);
+            _menuManager.PlayClickSound();
         }
     }
 
@@ -83,7 +90,7 @@ public class ShopManager : MonoBehaviour
 
     private void UpdateCoinsUI()
     {
-        totalCoinsText.text = "Coins: " + totalCoins;
+        totalCoinsText.text = totalCoins.ToString();
     }
 
     private bool IsSkinBought(int index)
@@ -103,6 +110,16 @@ public class ShopManager : MonoBehaviour
         if (!IsSkinBought(0))
         {
             SetSkinBought(0);
+        }
+    }
+
+    private IEnumerator ShowNotEnough()
+    {
+       if (!_notEnough.activeInHierarchy)
+        {
+            _notEnough.SetActive(true);
+            yield return new WaitForSeconds(1.0f);
+            _notEnough.SetActive(false);
         }
     }
 }

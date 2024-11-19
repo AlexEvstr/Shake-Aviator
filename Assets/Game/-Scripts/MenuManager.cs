@@ -10,14 +10,26 @@ public class MenuManager : MonoBehaviour
     public Image fadeImage;
     private float fadeDuration = 0.5f;
 
+    [SerializeField] private AudioClip _clickSound;
+    [SerializeField] private AudioClip _errorSound;
+    [SerializeField] private AudioClip _succesSound;
+
     private void Start()
     {
         _audioSource = GetComponent<AudioSource>();
         string audioCheck = PlayerPrefs.GetString("AudioCheck", "unMute");
         if (audioCheck == "unMute")
-            EnableAidio();
+        {
+            _audioBtns[1].SetActive(false);
+            _audioBtns[0].SetActive(true);
+            _audioSource.volume = 1;
+        }
         else
-            DisableAidio();
+        {
+            _audioBtns[0].SetActive(false);
+            _audioBtns[1].SetActive(true);
+            _audioSource.volume = 0;
+        }
 
         fadeImage.color = new Color(0, 0, 0, 1);
 
@@ -30,6 +42,7 @@ public class MenuManager : MonoBehaviour
         _audioBtns[1].SetActive(true);
         _audioSource.volume = 0;
         PlayerPrefs.SetString("AudioCheck", "Mute");
+        PlayClickSound();
     }
 
     public void EnableAidio()
@@ -38,10 +51,12 @@ public class MenuManager : MonoBehaviour
         _audioBtns[0].SetActive(true);
         _audioSource.volume = 1;
         PlayerPrefs.SetString("AudioCheck", "unMute");
+        PlayClickSound();
     }
 
     public void LoadSceneWithFade(string sceneName)
     {
+        PlayClickSound();
         StartCoroutine(FadeOut(sceneName));
     }
 
@@ -71,5 +86,23 @@ public class MenuManager : MonoBehaviour
         }
 
         fadeImage.color = new Color(0, 0, 0, 0);
+    }
+
+    public void PlayClickSound()
+    {
+        _audioSource.PlayOneShot(_clickSound);
+        Vibration.VibrateIOS(ImpactFeedbackStyle.Light);
+    }
+
+    public void PlayErrorSound()
+    {
+        _audioSource.PlayOneShot(_errorSound);
+        Vibration.VibrateIOS(NotificationFeedbackStyle.Error);
+    }
+
+    public void PlaySuccessSound()
+    {
+        _audioSource.PlayOneShot(_succesSound);
+        Vibration.VibrateIOS(NotificationFeedbackStyle.Success);
     }
 }
