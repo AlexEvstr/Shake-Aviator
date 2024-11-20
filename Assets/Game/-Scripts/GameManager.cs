@@ -20,6 +20,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        Screen.orientation = ScreenOrientation.Portrait;
         _audioSource = GetComponent<AudioSource>();
         string audioCheck = PlayerPrefs.GetString("AudioCheck", "unMute");
         if (audioCheck == "unMute") AudioListener.volume = 1;
